@@ -45,3 +45,8 @@ CNN提取
 9.**特征重要程度**
 
 在树结构的分类器比如randomforest、xgboost中最后能够对每个特征在分类上面的重要程度进行一个评估。得出最重要的几个特征，然后进行交叉特征可视化
+
+10.**常用特征技巧**
+
+* 对description出现频率最高的15k单词进行一个one-hot深度xgboost训练，将这个训练出来模型的预测结果作为description的encoding。
+
