@@ -34,6 +34,8 @@ $$
 
 提取关键词，情感分析，word embedding，找除停用词外高频词
 
+简单文本特征：大写小写比例，*!$等特殊字符的数量，电话号码或者邮箱的标志
+
 7.**图片特征**
 
 CNN提取
@@ -48,5 +50,6 @@ CNN提取
 
 10.**常用特征技巧**
 
-* 对description出现频率最高的15k单词进行一个one-hot深度xgboost训练，将这个训练出来模型的预测结果作为description的encoding。
+* description属性是一个单词集合，对description出现频率最高的15k单词进行一个one-hot深度xgboost训练，将这个训练出来模型的预测结果作为description的encoding。
+* 使用一种类别特征来给连续特征和类别特征分组，计算每组的统计值，如数量和方差等，与原始数据合并形成新的特征
 
