@@ -51,5 +51,18 @@ CNN提取
 10.**常用特征技巧**
 
 * description属性是一个单词集合，对description出现频率最高的15k单词进行一个one-hot深度xgboost训练，将这个训练出来模型的预测结果作为description的encoding。
+
 * 使用一种类别特征来给连续特征和类别特征分组，计算每组的统计值，如数量和方差等，与原始数据合并形成新的特征
+
+* [I split the base features two classes:](https://www.kaggle.com/c/two-sigma-connect-rental-listing-inquiries/discussion/32163)
+
+  manager:created,description,price,et
+
+  building:bathrooms,bedrooms,latitude,longitude,display_address,featuers,photos,et
+
+  Then I link and compare them one by one.
+  
+  [创建特征参考](https://github.com/plantsgo/Rental-Listing-Inquiries)
+  
+* 
 
