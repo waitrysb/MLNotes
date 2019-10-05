@@ -18,6 +18,8 @@ $$
 $$
 \lambda(n)=\frac{1}{1+\exp^{-\frac{n-k}{f}}}
 $$
+[例子](https://www.kaggle.com/c/two-sigma-connect-rental-listing-inquiries/discussion/32148)：对High Cardinal Categorical的特征用了一些额外的条件概率来计算其似然值，如p(y|manager_id, bathrooms)等，并且进行了点积操作来计算出一个合适的encoding值（类似于先前讨论区中出现的manager_skills
+
 4.**时间特征**
 
 提取年、月、日、星期等
@@ -51,6 +53,8 @@ CNN提取
 10.**常用特征技巧**
 
 * description属性是一个单词集合，对description出现频率最高的15k单词进行一个one-hot深度xgboost训练，将这个训练出来模型的预测结果作为description的encoding。
+
+  也可以对description属性里的supermarket、bus、shopping等的经纬度进行聚类，求出这些属性的大致经纬度，进而可以估测距离
 
 * 使用一种类别特征来给连续特征和类别特征分组，计算每组的统计值，如数量和方差等，与原始数据合并形成新的特征
 

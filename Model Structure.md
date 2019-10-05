@@ -35,10 +35,10 @@
   > with a feature from description,Classify the source by description:
   > begin with " "
   >
-  > it improved at public but turn bad at pravate.Maybe can remove it.
+  > 在public上有提升但是private上反而下滑了，可以移除吧
   >
   > pre=((xgb^0.65)*(nn^0.35))*0.85+et*0.15
-  > then userd [@weiwei](https://www.kaggle.com/weiwei) 's Prior correction. but only improved 0.00001-0.00002
+  > 然后使用 [@weiwei](https://www.kaggle.com/weiwei)的先验纠正.但是只提升了0.00001-0.00002
   >
   > 2.use ①,②,⑤ as metefeatures with xgb,nn,et.
   > pre=((xgb^0.65)*(nn^0.35))*0.85+et*0.15
@@ -58,7 +58,27 @@ nn模型结构：
 
 
 
-2.[Two Sigma Connect: Rental Listing Inquiries第三名](https://www.kaggle.com/c/two-sigma-connect-rental-listing-inquiries/discussion/32123)
+2.[Two Sigma Connect: Rental Listing Inquiries第二名](https://www.kaggle.com/c/two-sigma-connect-rental-listing-inquiries/discussion/32148)
+
+**Base Models**
+
+- 32 LightGBM models
+- 9 ET models (sklearn)
+- 7 RF models (sklearn)
+- 5 Keras models
+- 3 XGBoost models
+- [@KazAnova](https://www.kaggle.com/KazAnova)'s StackNet example base-level predictions
+
+这些模型使用使用不同特征来训练，可能多类、回归或者二分类模型
+
+Those models have been trained on different feature sets and they are either multi-class, regression or binary classification models built on
+5-Fold stratified splits.
+
+**最优模型**：lgb并使用grid search bagging进行调参，如果新模型加入后提升了整体的cv分数，则加入到bag中，最后是一个12-bagged模型，分数比一个正常的15次bag模型更好
+
+**最终提交**：使用的是两个两层Keras-NN网络，第一个创建测试结果不断迭代交叉验证，第二个（更好）使用early stopping每折35 bags
+
+3.[Two Sigma Connect: Rental Listing Inquiries第三名](https://www.kaggle.com/c/two-sigma-connect-rental-listing-inquiries/discussion/32123)
 
 三层模型，比赛过程best single model --> some more base models for diversity --> ensemble of them --> improve best single model --> improve ensemble --> generate more base model to make sure the improvement flows from bottom to top --> repeat
 
