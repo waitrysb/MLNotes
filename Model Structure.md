@@ -87,3 +87,67 @@ when you find a new feature that will improves the performance, you build a new 
 * 第一层，lightgbm，xgboost，nn，分类和回归都训练，stacknet取第一层输出
 * 第二层，lightgbm和nn，只分类，(LightGBM + NN + RF) x (features I + features II) = 6 models
 * 第三层，加权平均
+
+3.[Two Sigma Connect: Rental Listing Inquiries第9名](https://www.kaggle.com/c/two-sigma-connect-rental-listing-inquiries/discussion/32146)
+
+解释了为什么第三层用几何平均数
+
+三层模型
+
+- 第一层
+
+  > Scores are from 5 fold stratified CV.
+  >
+  > Classifiers (Log loss)
+  >
+  > et1 0.58221 (Extra Random Trees)
+  > lgb3 0.50573
+  > lgb4 0.50627
+  > lgb5 0.50582
+  > rf1 0.55560 (Random Forest)
+  > rte1 0.58279 (*)
+  > xgb0 0.53982
+  > xgb1 0.50611
+  > xgb2 0.50587
+  > keras 0.53630 (average of five different NN's)
+  >
+  > Regressors (RMSE)
+  >
+  > etr1 0.47359
+  > ftrl1 0.51537
+  > ftrl2 0.49579
+  > lgbr1 0.45111
+  > lgbr2 0.44766
+  > rfr1 0.47306
+  > xgbr1 0.44717
+
+- 第二层：
+
+  xgb 0.494664 +/- 0.004521 public 0.49723 private 0.49552
+
+  keras 0.494422 +/- 0.005545 public 0.49782 private 0.49553
+
+  > ```
+  > #xgb param
+  > param['objective'] = 'multi:softprob'
+  > param['eta'] = 0.03
+  > param['max_depth'] = 4
+  > param['silent'] = 1
+  > param['num_class'] = 3
+  > param['eval_metric'] = "mlogloss"
+  > param['min_child_weight'] = 8
+  > param['gamma'] = 0.2
+  > param['subsample'] = 0.4
+  > param['colsample_bytree'] = 1
+  > param['colsample_bylevel'] = .9
+  > 
+  > #NN
+  > model = Sequential()
+  > model.add(Dense(100, input_dim=n, init='lecun_uniform'))
+  > model.add(Dropout(0.6))
+  > model.add(PReLU())
+  > model.add(Dense(3, init='lecun_uniform', activation='softmax'))
+  > model.compile(loss='sparse_categorical_crossentropy', optimizer=Adagrad(0.05), metrics=['accuracy'])
+  > ```
+
+- 第三层，几何平均 Geometric mean: public 0.49670 private 0.49470

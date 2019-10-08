@@ -4,7 +4,7 @@
 
 2.**数值型feature的简单加减乘除**
 
-这个乍一看仿佛没有道理可言，但是事实上却能挖掘出几个feature之间的内在联系，比如这场比赛中提供了bathrooms和bedrooms的数量，以及价格price，合租用户可能会更关心每个卧室的价格，即bathrooms / price，也会关心是不是每个房间都会有一个卫生间bathrooms / price ，这些数值型feature之间通过算数的手段建立了联系，从而挖掘出了feature内部的一些价值，分数也就相应地上去了。
+这个乍一看仿佛没有道理可言，但是事实上却能挖掘出几个feature之间的内在联系，比如[这场比赛](https://www.kaggle.com/c/two-sigma-connect-rental-listing-inquiries/discussion/32146)中提供了bathrooms和bedrooms的数量，以及价格price，合租用户可能会更关心每个卧室的价格，即bathrooms / price，也会关心是不是每个房间都会有一个卫生间bathrooms / price ，这些数值型feature之间通过算数的手段建立了联系，从而挖掘出了feature内部的一些价值，分数也就相应地上去了。还有与price相关的就是price%100，可以区分高价和低价
 
 3.**高势集类别（High Categorical）**即某个特征的类别特别多
 
@@ -24,13 +24,15 @@ $$
 
 提取年、月、日、星期等
 
-时间差：比如当前时间-创建时间
+时间差：比如当前时间-创建时间；按照id分组来求活跃时间差
 
 交叉：时间与其他特征的可视化，观察图像，考虑函数关系
 
 5.**地理位置**
 
 聚类特征，算中心点坐标，计算曼哈顿距离或欧氏距离
+
+街道地址：进行清洗，如first-》1st，west-》w，也可以进行统计；按照地址经纬度找到街道的经纬度；[将地址字符串翻转后用整数编码](https://www.kaggle.com/c/two-sigma-connect-rental-listing-inquiries/discussion/32146)
 
 6.**文本特征**
 
@@ -42,15 +44,42 @@ $$
 
 CNN提取
 
+图像长度和宽度，面积和文件大小，分别进行聚类
+
+像素平均大小（文件大小/面积），CRC后计数
+
 8.**稀疏特征集**（标签特征）
 
-计数后使用one-hot，同时根据标签意义合并一些标签，比如cat allowed 和 dog allowed可以合并成为 pet allowed
+计数后使用one-hot，同时根据标签意义合并一些标签，比如cat allowed 和 dog allowed可以合并成为 pet allowed，或者与$相关的标签
+
+也可以按照另一个类别型特征分组，将组内的标签拼接为一个字符串，压缩长度或压缩比作为特征，如[description](https://www.kaggle.com/c/two-sigma-connect-rental-listing-inquiries/discussion/32146)
 
 9.**特征重要程度**
 
 在树结构的分类器比如randomforest、xgboost中最后能够对每个特征在分类上面的重要程度进行一个评估。得出最重要的几个特征，然后进行交叉特征可视化
 
-10.**常用特征技巧**
+10.**类别型特征**
+
+* 使用one-hot编码
+
+* 使用类别的统计值如频率代替，转化为数值特征
+
+* 与其他数值型特征交叉，按照类别求出数值统计值
+
+* 与其他类别型特征合并，如no_pet和no_dog，要求这两种特征互斥
+
+  > all[no_pet_no_dog] = all[no_pet] + (2 * all[no_dog])
+  >
+  > all['listingmistakescatint'] = all['buildingid_missing'] \
+  > (2\*(all['photoslistlen'] < 1).astype(int)) \
+  > (4\*(all['featureslistlen'] < 1).astype(int)) \
+  > (8*(all['descriptionstrlen'] <= 8).astype(int))
+
+11.**等级型特征**
+
+
+
+12.**常用特征技巧**
 
 * description属性是一个单词集合，对description出现频率最高的15k单词进行一个one-hot深度xgboost训练，将这个训练出来模型的预测结果作为description的encoding。
 
@@ -68,5 +97,23 @@ CNN提取
   
   [创建特征参考](https://github.com/plantsgo/Rental-Listing-Inquiries)
   
-* 
+* 列举出有用的missing value
+
+  > ```
+  > all['listing_mistakes_2'] = all['building_id_missing'] + \
+  >                            (all['photos_list_len'] < 1)
+  > all['listing_mistakes_3'] = all['building_id_missing'] +  \
+  >                            (all['photos_list_len'] < 1) + \
+  >                            (all['features_list_len'] < 1)
+  > all['listing_mistakes_4'] = all['building_id_missing'] + \
+  >                            (all['photos_list_len'] < 1) + \
+  >                            (all['features_list_len'] < 1) + \
+  >                            (all['description_str_len'] <= 8)
+  > all['listing_mistakes_cat_int'] = all['building_id_missing'] \
+  >       + (2*(all['photos_list_len'] < 1))    \
+  >       + (4*(all['features_list_len'] < 1))  \
+  >       + (8*(all['description_str_len'] <= 8))
+  > ```
+
+* 可以使用[LightGBM](https://www.kaggle.com/c/two-sigma-connect-rental-listing-inquiries/discussion/32146)来看特征的重要性
 
