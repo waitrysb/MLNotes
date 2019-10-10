@@ -151,3 +151,21 @@ when you find a new feature that will improves the performance, you build a new 
   > ```
 
 - 第三层，几何平均 Geometric mean: public 0.49670 private 0.49470
+
+3.[Two Sigma Connect: Rental Listing Inquiries第11名](https://www.kaggle.com/c/two-sigma-connect-rental-listing-inquiries/discussion/32116)
+
+模型差异度diversity
+
+>  So run a xg, et , nn, logit etc for different transformations-combinations of the data - bear in mind that best parameters for the models change and you need to redefine them after you make a change to the data . This will generate diverse models by default.Even if they don;t have better scores individually- they may still add value in an ensemble.
+>
+> 使用xgboost、nn、逻辑回归等模型来训练特征的交叉转换，重新调参，如果新特征分数没有提升，那么也可以加入到模型融合中
+
+三层模型
+
+* 将近100个模型，大多数是自动生成的（使用了不同的数据特征转化），还有几个手动搭建的leak特征的模型。大多数是gbms和nn，还有20%是StackNet工具包的模型，剩下的是xgb、keras模型、lgb模型、sklearn的rfs等
+
+  leak前的最好单模是xgboost
+
+* 对上面模型的结果使用stacking，分别用一个gbm、nn和线性模型（线性模型有点过拟合）进行训练
+
+* 三个模型的加权和（权重相等）

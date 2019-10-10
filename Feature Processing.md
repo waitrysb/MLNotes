@@ -6,6 +6,8 @@
 
 这个乍一看仿佛没有道理可言，但是事实上却能挖掘出几个feature之间的内在联系，比如[这场比赛](https://www.kaggle.com/c/two-sigma-connect-rental-listing-inquiries/discussion/32146)中提供了bathrooms和bedrooms的数量，以及价格price，合租用户可能会更关心每个卧室的价格，即bathrooms / price，也会关心是不是每个房间都会有一个卫生间bathrooms / price ，这些数值型feature之间通过算数的手段建立了联系，从而挖掘出了feature内部的一些价值，分数也就相应地上去了。还有与price相关的就是price%100，可以区分高价和低价
 
+还可以分箱
+
 3.**高势集类别（High Categorical）**即某个特征的类别特别多
 
 **clustering**：依据target的值grouping成k个类(clusters)，然后再依据这个grouping的结果进行one-hot编码，这个方法最大程度的保留了原始数据的信息
@@ -77,9 +79,13 @@ CNN提取
 
 11.**等级型特征**
 
+12.**缺失值**
 
+* 数值型使用中位数或者平均数填补，类别型用众数填补
+* 缺失多则可以考虑新建一个缺失类（类别型），或者直接丢弃该特征
+* 观察数据，看是不是缺失项的其他属性与其他项类似，这样就可以做一个分组来填补
 
-12.**常用特征技巧**
+13.**常用特征技巧**
 
 * description属性是一个单词集合，对description出现频率最高的15k单词进行一个one-hot深度xgboost训练，将这个训练出来模型的预测结果作为description的encoding。
 
@@ -117,3 +123,32 @@ CNN提取
 
 * 可以使用[LightGBM](https://www.kaggle.com/c/two-sigma-connect-rental-listing-inquiries/discussion/32146)来看特征的重要性
 
+14.其他技巧
+
+* 保存之前的模型以便下一次比赛可以复用
+
+  > I generate various models treating the following things as hyper parameters:
+  >
+  > 1. Value to replace the **null values**
+  >
+  >    替换空值
+  >
+  > 2. transformation of **categorical features** (could be onehot, likelihoods, counts , ids etc)
+  >
+  >    类别型特征的转换（onehot，概率，数量）
+  >
+  > 3. transformation of **numerical variables** (removing outliers, scaling, binning) . if binning then number 2 apply and repeat!
+  >
+  >    数值型特征的转换（去除异常值，规范化，分箱）
+  >
+  > 4. **interactions** of categorical-to-categorical , categorical-to-numerical,numerical-to-numerical
+  >
+  >    特征交叉
+  >
+  > 5. Type of **algorithm** (forest, gbm, nn, linear, libfm, knn)
+  >
+  >    算法种类
+  >
+  > 6. Based on type of algorithm run on different **hyper parameters** ( a small list of hyper params' variations I have found useful in the past)
+  >
+  >    不同算法的超参数范围
